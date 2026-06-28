@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "./AuthProvider";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "../lib/supabase";
 import { LogOut, User } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 

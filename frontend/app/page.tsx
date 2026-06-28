@@ -1,4 +1,4 @@
-import { WasteForm } from "@/components/WasteForm";
+import { WasteForm } from "../components/WasteForm";
 
 export default function Home() {
   return (

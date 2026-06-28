@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
+import { Button } from '../components/ui/button';
 import { MapPin, CheckCircle2, XCircle, AlertCircle, Loader2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 

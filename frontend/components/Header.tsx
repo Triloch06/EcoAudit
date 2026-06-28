@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from './AuthProvider';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../lib/supabase';
 import { LogOut, User, ChevronDown } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import Link from 'next/link';

@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { DashboardStats } from '@/components/DashboardStats';
-import { WasteTable, WasteLog } from '@/components/WasteTable';
-import { api } from '@/services/api';
+import { DashboardStats } from '../../components/DashboardStats';
+import { WasteTable, WasteLog } from '../../components/WasteTable';
+import { api } from '../../services/api';
 import { toast } from 'sonner';
 import { Leaf } from 'lucide-react';
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Skeleton } from '../components/ui/skeleton';
 import { FileText, Star, Clock, Briefcase } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import dynamic from 'next/dynamic';

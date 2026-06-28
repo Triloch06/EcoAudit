@@ -8,12 +8,12 @@ import {
   TableHead, 
   TableHeader, 
   TableRow 
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+} from '../components/ui/table';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { ArrowUpDown, Search, Download, Calendar as CalendarIcon, Trash2 } from 'lucide-react';
-import { exportService, logsService } from '@/services/api';
+import { exportService, logsService } from '../services/api';
 import { toast } from 'sonner';
 
 export interface WasteLog {

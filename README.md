@@ -499,3 +499,4 @@ Tables are created automatically on backend startup via `Base.metadata.create_al
 Building EcoAudit taught me more about system architecture than any individual technology in the stack. The interesting parts weren't the frameworks themselves — they were the decisions between them. Why SQL aggregation over Python loops. Why dual validation layers. Why browser geolocation can't be optional. Why the frontend should never be the only line of defense.
 
 The project is fundamentally about data integrity. If the location data isn't trustworthy, the analytics are meaningless and the exports are just decorated guesses. Every architectural decision — from disabling the submit button until GPS verification to rounding coordinates for spatial grouping — was made to keep that trust intact.
+

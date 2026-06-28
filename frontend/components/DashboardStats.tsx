@@ -117,9 +117,9 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ data, highestAre
             <div className="p-3 bg-purple-100 dark:bg-purple-900/50 rounded-xl">
               <Clock className="h-6 w-6 text-purple-600 dark:text-purple-400" />
             </div>
-            <div className="overflow-hidden">
+            <div>
               <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Latest Entry</p>
-              <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white truncate">
+              <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white capitalize">
                 {data.latest_entry 
                     ? formatDistanceToNow(
                         new Date(!data.latest_entry.includes('Z') && !data.latest_entry.includes('+') ? data.latest_entry + 'Z' : data.latest_entry), 
@@ -127,7 +127,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ data, highestAre
                       ) 
                     : '-'}
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">Last submission time</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Last submission time</p>
             </div>
           </CardContent>
         </Card>

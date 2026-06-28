@@ -162,8 +162,11 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ data, highestAre
                         ))}
                       </Pie>
                       <Tooltip 
-                        formatter={(value: number) => [`${value.toFixed(2)} kg`, 'Weight']}
-                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                        formatter={(value: any) => {
+                          const num = Number(value);
+                          return [`${isNaN(num) ? 0 : num.toFixed(2)} kg`, 'Weight'];
+                        }}
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }}
                       />
                     </PieChart>
                   </ResponsiveContainer>

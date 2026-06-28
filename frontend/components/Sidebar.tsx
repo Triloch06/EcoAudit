@@ -6,16 +6,21 @@ import { usePathname } from 'next/navigation';
 import { 
   Home, 
   PlusCircle, 
-  Settings, 
+  Settings,
+  ShieldCheck,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useAuth } from './AuthProvider';
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user } = useAuth();
+  const isAdmin = user?.user_metadata?.role === 'admin';
 
   const links = [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
     { name: 'Log Waste', href: '/', icon: PlusCircle },
+    ...(isAdmin ? [{ name: 'Admin', href: '/admin', icon: ShieldCheck }] : []),
     { name: 'Settings', href: '/settings', icon: Settings },
   ];
 

@@ -70,17 +70,16 @@ export const WasteForm = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-2 mb-2">
-            <Leaf className="h-8 w-8 text-emerald-600" />
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
             Log Waste
           </h1>
-          <p className="text-slate-500">
+          <p className="text-slate-500 dark:text-slate-400">
             Submit your waste information accurately. We require your physical location to verify the entry.
           </p>
         </div>
 
         <form id="waste-form" onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <Card className="border-slate-200 shadow-sm">
+          <Card className="glass-card">
             <CardHeader>
               <CardTitle>Waste Details</CardTitle>
             </CardHeader>
@@ -144,7 +143,7 @@ export const WasteForm = () => {
           longitude={locationData.longitude}
         />
         
-        <Card className="border-slate-200 shadow-sm">
+        <Card className="glass-card">
           <CardContent className="pt-6">
             <Button 
               type="submit" 
@@ -162,7 +161,7 @@ export const WasteForm = () => {
               )}
             </Button>
             {!isLocationValid && (
-              <p className="text-center text-xs text-slate-500 mt-3">
+              <p className="text-center text-xs text-slate-500 dark:text-slate-400 mt-3">
                 Location must be verified before submitting.
               </p>
             )}

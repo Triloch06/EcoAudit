@@ -1,6 +1,6 @@
 import uuid
 import datetime
-from sqlalchemy import Column, String, Float, DateTime, ForeignKey
+from sqlalchemy import Column, String, Float, DateTime, ForeignKey, CheckConstraint
 from database.database import Base
 
 class Profile(Base):
@@ -23,3 +23,10 @@ class WasteLog(Base):
     accuracy = Column(Float, nullable=False)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.datetime.now(datetime.timezone.utc))
     user_id = Column(String(36), ForeignKey("profiles.id"), nullable=True)
+
+    __table_args__ = (
+        CheckConstraint('weight > 0', name='check_weight_positive'),
+        CheckConstraint('latitude >= -90 AND latitude <= 90', name='check_latitude_bounds'),
+        CheckConstraint('longitude >= -180 AND longitude <= 180', name='check_longitude_bounds'),
+        CheckConstraint('accuracy > 0', name='check_accuracy_positive'),
+    )

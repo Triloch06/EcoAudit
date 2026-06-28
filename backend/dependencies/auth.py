@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from database.database import get_db
 from models.models import Profile
 
-SUPABASE_API_URL = os.getenv("SUPABASE_API_URL", "https://daxjdiudpnmbeaksmthq.supabase.co")
-SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "sb_publishable_J10Ip7k8kL0rjI5depenqA_uUSU18ak")
+SUPABASE_API_URL = os.getenv("SUPABASE_API_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
 if SUPABASE_API_URL and SUPABASE_ANON_KEY:
     supabase: Client = create_client(SUPABASE_API_URL, SUPABASE_ANON_KEY)

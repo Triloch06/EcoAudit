@@ -112,30 +112,69 @@ export const WasteTable: React.FC<WasteTableProps> = ({
   };
 
   return (
-    <Card className="border-slate-200 dark:border-none shadow-sm mt-6 dark:bg-[#1E293B]">
-      <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 gap-4">
-        <CardTitle className="text-xl text-slate-900 dark:text-[#F8FAFC]">Waste Logs</CardTitle>
+    <Card className="glass-card mt-6">
+      <CardHeader className="flex flex-col lg:flex-row lg:items-center justify-between pb-4 gap-4">
+        <div>
+          <CardTitle className="text-xl text-slate-900 dark:text-[#F8FAFC]">Waste Logs</CardTitle>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">View and manage all waste logs</p>
+        </div>
+        
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500 dark:text-slate-400" />
+            <Input
+              type="text"
+              placeholder="Search category..."
+              className="pl-9 h-10 w-full sm:w-48 bg-white dark:bg-[#111827] dark:text-slate-200 border-slate-200 dark:border-slate-700 focus:border-[#10B981] focus:ring-[#10B981]/25"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+          <div className="relative">
+            <Input
+              type="date"
+              className="h-10 bg-white dark:bg-[#111827] dark:text-slate-200 border-slate-200 dark:border-slate-700 w-full sm:w-40 focus:border-[#10B981] focus:ring-[#10B981]/25"
+              value={dateFilter}
+              onChange={(e) => {
+                setDateFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="default" className="h-10 px-3 flex gap-2 bg-[#166534] hover:bg-[#15803D] text-white border-none" onClick={() => handleExport('excel')}>
+              <Download className="h-4 w-4" /> Export Excel
+            </Button>
+            <Button variant="default" className="h-10 px-3 flex gap-2 bg-white hover:bg-slate-50 text-[#166534] border border-[#166534] dark:bg-slate-900 dark:text-emerald-400 dark:border-emerald-800" onClick={() => handleExport('pdf')}>
+              <Download className="h-4 w-4" /> Export PDF
+            </Button>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="rounded-md border border-slate-200 dark:border-slate-700 overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50 dark:bg-[#1E293B]">
-              <TableRow className="dark:border-slate-700">
-                <TableHead className="font-semibold text-slate-700 dark:text-[#E2E8F0]">Category</TableHead>
-                <TableHead className="font-semibold text-slate-700 dark:text-[#E2E8F0]">
-                  <Button variant="ghost" onClick={() => handleSort('weight')} className="px-0 font-semibold hover:bg-transparent -ml-3 dark:hover:text-white">
-                    Weight (kg) <ArrowUpDown className="ml-2 h-4 w-4" />
+            <TableHeader className="bg-slate-50/50 dark:bg-slate-800/30">
+              <TableRow className="dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 text-xs uppercase tracking-wider text-slate-500 font-bold">
+                <TableHead className="font-bold text-slate-500 w-12 text-center">#</TableHead>
+                <TableHead className="font-bold text-slate-500">Category</TableHead>
+                <TableHead className="font-bold text-slate-500">
+                  <Button variant="ghost" onClick={() => handleSort('weight')} className="px-0 font-bold text-slate-500 hover:bg-transparent -ml-3 dark:hover:text-slate-300">
+                    Weight (kg) <ArrowUpDown className="ml-2 h-3 w-3" />
                   </Button>
                 </TableHead>
-                <TableHead className="font-semibold text-slate-700 dark:text-[#E2E8F0]">Location (Lat, Lng)</TableHead>
-                <TableHead className="font-semibold text-slate-700 dark:text-[#E2E8F0]">Accuracy (m)</TableHead>
-                <TableHead className="font-semibold text-slate-700 dark:text-[#E2E8F0]">
-                  <Button variant="ghost" onClick={() => handleSort('date')} className="px-0 font-semibold hover:bg-transparent -ml-3 dark:hover:text-white">
-                    Date & Time <ArrowUpDown className="ml-2 h-4 w-4" />
+                <TableHead className="font-bold text-slate-500">Location (Lat, Lng)</TableHead>
+                <TableHead className="font-bold text-slate-500">Accuracy (m)</TableHead>
+                <TableHead className="font-bold text-slate-500">
+                  <Button variant="ghost" onClick={() => handleSort('date')} className="px-0 font-bold text-slate-500 hover:bg-transparent -ml-3 dark:hover:text-slate-300">
+                    Date & Time <ArrowUpDown className="ml-2 h-3 w-3" />
                   </Button>
                 </TableHead>
-                {isAdmin && <TableHead className="font-semibold text-slate-700 dark:text-[#E2E8F0]">User</TableHead>}
-                {isAdmin && <TableHead className="font-semibold text-slate-700 dark:text-[#E2E8F0]">Actions</TableHead>}
+                {isAdmin && <TableHead className="font-bold text-slate-500">User</TableHead>}
+                {isAdmin && <TableHead className="font-bold text-slate-500 text-right">Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -156,15 +195,21 @@ export const WasteTable: React.FC<WasteTableProps> = ({
                 </TableRow>
               ) : (
                 paginatedLogs.map((log, index) => (
-                  <TableRow key={log.id} className="dark:border-slate-700 dark:hover:bg-[#1E293B] dark:odd:bg-[#111827] dark:even:bg-[#0F172A]">
-                    <TableCell className="font-medium dark:text-slate-200">{log.category}</TableCell>
-                    <TableCell className="dark:text-slate-300">{log.weight.toFixed(2)}</TableCell>
-                    <TableCell className="text-slate-500 dark:text-[#94A3B8] font-mono text-sm">
-                      {log.latitude.toFixed(5)}, {log.longitude.toFixed(5)}
+                  <TableRow key={log.id} className="dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                    <TableCell className="text-slate-500 text-center text-sm">{startIndex + index + 1}</TableCell>
+                    <TableCell className="font-medium dark:text-slate-200">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 capitalize shadow-sm inline-flex items-center gap-1.5">
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#10B981' }}></div>
+                        {log.category}
+                      </span>
                     </TableCell>
-                    <TableCell className="dark:text-slate-300">±{Math.round(log.accuracy)}</TableCell>
-                    <TableCell className="text-slate-500 dark:text-[#94A3B8] text-sm">
-                      {new Date(!log.created_at.includes('Z') && !log.created_at.includes('+') ? log.created_at + 'Z' : log.created_at).toLocaleString()}
+                    <TableCell className="text-slate-600 dark:text-slate-300 text-sm">{log.weight.toFixed(2)}</TableCell>
+                    <TableCell className="text-slate-500 dark:text-[#94A3B8] font-mono text-xs">
+                      {log.latitude.toFixed(6)}, {log.longitude.toFixed(6)}
+                    </TableCell>
+                    <TableCell className="text-slate-600 dark:text-slate-300 text-sm">±{Math.round(log.accuracy)}</TableCell>
+                    <TableCell className="text-slate-600 dark:text-[#94A3B8] text-sm">
+                      {new Date(!log.created_at.includes('Z') && !log.created_at.includes('+') ? log.created_at + 'Z' : log.created_at).toLocaleString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </TableCell>
                     {isAdmin && (
                       <TableCell className="text-slate-500 dark:text-[#94A3B8] text-sm">
@@ -190,41 +235,10 @@ export const WasteTable: React.FC<WasteTableProps> = ({
           </Table>
         </div>
 
-        {/* Controls Section (Moved below table) */}
+        {/* Controls Section (Moved to header, keeping pagination below) */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-6">
-          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500 dark:text-slate-400" />
-              <Input
-                type="text"
-                placeholder="Search category..."
-                className="pl-9 bg-white dark:bg-[#111827] dark:text-slate-200 dark:border-slate-700 focus:border-[#10B981] focus:ring-[#10B981]/25"
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1);
-                }}
-              />
-            </div>
-            <div className="relative">
-              <Input
-                type="date"
-                className="bg-white dark:bg-[#111827] dark:text-slate-200 dark:border-slate-700 w-full sm:w-[150px] focus:border-[#10B981] focus:ring-[#10B981]/25"
-                value={dateFilter}
-                onChange={(e) => {
-                  setDateFilter(e.target.value);
-                  setCurrentPage(1);
-                }}
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button variant="default" className="flex gap-2 bg-[#166534] hover:bg-[#15803D] text-white border-none" onClick={() => handleExport('excel')}>
-                <Download className="h-4 w-4" /> Excel
-              </Button>
-              <Button variant="default" className="flex gap-2 bg-[#991B1B] hover:bg-[#B91C1C] text-white border-none" onClick={() => handleExport('pdf')}>
-                <Download className="h-4 w-4" /> PDF
-              </Button>
-            </div>
+          <div className="text-sm text-slate-500 dark:text-[#94A3B8]">
+            Showing {paginatedLogs.length > 0 ? startIndex + 1 : 0} to {Math.min(startIndex + itemsPerPage, filteredLogs.length)} of {filteredLogs.length} results
           </div>
 
           {/* Pagination controls */}

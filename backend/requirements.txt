@@ -6,3 +6,5 @@ pydantic
 openpyxl
 reportlab
 python-dotenv
+slowapi
+tzdata

@@ -13,33 +13,37 @@ export function NavBar() {
   };
 
   return (
-    <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4 shadow-sm flex items-center justify-between transition-colors">
-      <div className="flex items-center gap-2">
-        <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-500">EcoAudit</span>
-      </div>
-      <div className="flex gap-4 items-center">
-        {user ? (
-          <>
-            <a href="/" className="text-slate-600 dark:text-[#CBD5E1] hover:text-emerald-600 dark:hover:text-[#34D399] font-medium transition-colors">Log Waste</a>
-            <a href="/dashboard" className="text-slate-600 dark:text-[#10B981] hover:text-emerald-600 dark:hover:text-[#34D399] font-medium transition-colors">Dashboard</a>
-            <ThemeToggle />
-            <div className="flex items-center gap-2 ml-2 pl-4 border-l border-slate-200 dark:border-slate-700">
-              <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full">
-                <User size={16} className="text-slate-500 dark:text-slate-400" />
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate max-w-[150px]">{user.email}</span>
+    <div className="sticky top-4 z-50 px-4 sm:px-6 lg:px-8 mb-8 max-w-7xl mx-auto">
+      <nav className="glass rounded-2xl px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl font-bold text-gradient">EcoAudit</span>
+        </div>
+        <div className="flex gap-4 items-center">
+          {user ? (
+            <>
+              <a href="/" className="text-sm text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium transition-colors">Log Waste</a>
+              <a href="/dashboard" className="text-sm text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium transition-colors">Dashboard</a>
+              <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
+              <ThemeToggle />
+              <div className="flex items-center gap-2 ml-1">
+                <div className="flex items-center gap-2 bg-slate-100/50 dark:bg-slate-800/50 px-3 py-1.5 rounded-full border border-slate-200/50 dark:border-slate-700/50">
+                  <User size={14} className="text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate max-w-[120px]">{user.email}</span>
+                </div>
+                <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-all hover:rotate-12" title="Logout">
+                  <LogOut size={16} />
+                </button>
               </div>
-              <button onClick={handleLogout} className="p-2 text-slate-500 hover:text-red-600 dark:hover:text-red-400 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Logout">
-                <LogOut size={18} />
-              </button>
-            </div>
-          </>
-        ) : (
-          <>
-            <ThemeToggle />
-            <a href="/login" className="text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium ml-2 transition-colors">Login</a>
-          </>
-        )}
-      </div>
-    </nav>
+            </>
+          ) : (
+            <>
+              <ThemeToggle />
+              <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
+              <a href="/login" className="text-sm px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-medium transition-all shadow-sm shadow-emerald-500/20 hover:shadow-emerald-500/40">Login</a>
+            </>
+          )}
+        </div>
+      </nav>
+    </div>
   );
 }

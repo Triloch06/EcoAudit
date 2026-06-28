@@ -102,3 +102,10 @@ Desktop.ini
 *.njsproj
 *.sln
 *.sw?
+
+# Project docs (not for git)
+PRD EcoAudit
+SECURITY.md
+CLAUDE.md
+AGENTS.md
+.agents/

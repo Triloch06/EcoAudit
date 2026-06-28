@@ -66,15 +66,14 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="py-4 space-y-4 max-w-7xl mx-auto">
-      <div className="flex items-center gap-3">
-        <div className="p-2 bg-emerald-100 rounded-lg">
-          <Leaf className="h-6 w-6 text-emerald-600" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-[#F8FAFC]">Dashboard</h1>
-          <p className="text-slate-500 dark:text-[#94A3B8]">Monitor community waste logs and statistics.</p>
-        </div>
+    <div className="py-2 space-y-8 max-w-[1400px] mx-auto pb-12">
+      <div className="mb-6">
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+          Welcome back! 🌿
+        </h1>
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2">
+          Here's what's happening with your community waste.
+        </p>
       </div>
 
       <DashboardStats data={statsData} highestArea={highestArea} isLoading={isLoading} />

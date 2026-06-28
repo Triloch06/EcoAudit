@@ -1,15 +1,19 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from database.database import get_db
 from models.models import WasteLog, Profile
 from services.export_service import generate_excel, generate_pdf
 from dependencies.auth import get_current_user
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 router = APIRouter(prefix="/export", tags=["Export"])
+limiter = Limiter(key_func=get_remote_address)
 
 @router.get("/excel")
-def export_excel(db: Session = Depends(get_db), current_user: Profile = Depends(get_current_user)):
+@limiter.limit("5/minute")
+def export_excel(request: Request, db: Session = Depends(get_db), current_user: Profile = Depends(get_current_user)):
     query = db.query(WasteLog)
     if current_user.role != "admin":
         query = query.filter(WasteLog.user_id == current_user.id)
@@ -23,7 +27,8 @@ def export_excel(db: Session = Depends(get_db), current_user: Profile = Depends(
     )
 
 @router.get("/pdf")
-def export_pdf(db: Session = Depends(get_db), current_user: Profile = Depends(get_current_user)):
+@limiter.limit("5/minute")
+def export_pdf(request: Request, db: Session = Depends(get_db), current_user: Profile = Depends(get_current_user)):
     query = db.query(WasteLog)
     if current_user.role != "admin":
         query = query.filter(WasteLog.user_id == current_user.id)

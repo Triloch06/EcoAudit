@@ -1,9 +1,29 @@
 import io
+import datetime
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:
+    from backports.zoneinfo import ZoneInfo
+
 from openpyxl import Workbook
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
+
+def sanitize_cell(value):
+    if isinstance(value, str):
+        if value.startswith(('=', '+', '-', '@')):
+            return f"'{value}"
+    return value
+
+def format_time(dt):
+    if not dt:
+        return ""
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=datetime.timezone.utc)
+    dt_local = dt.astimezone(ZoneInfo("Asia/Kolkata"))
+    return dt_local.strftime("%Y-%m-%d %I:%M %p")
 
 def generate_excel(logs) -> io.BytesIO:
     wb = Workbook()
@@ -11,19 +31,18 @@ def generate_excel(logs) -> io.BytesIO:
     ws.title = "Waste Logs"
     
     # Headers
-    headers = ["ID", "Category", "Weight (kg)", "Latitude", "Longitude", "Accuracy (m)", "Date & Time"]
+    headers = ["Category", "Weight (kg)", "Latitude", "Longitude", "Accuracy (m)", "Date & Time"]
     ws.append(headers)
     
     # Data
     for log in logs:
         ws.append([
-            str(log.id),
-            log.category,
+            sanitize_cell(log.category),
             log.weight,
             log.latitude,
             log.longitude,
             log.accuracy,
-            log.created_at.strftime("%Y-%m-%d %H:%M:%S") if log.created_at else ""
+            format_time(log.created_at)
         ])
         
     stream = io.BytesIO()
@@ -47,7 +66,7 @@ def generate_pdf(logs) -> io.BytesIO:
         data.append([
             log.category,
             f"{log.weight:.2f}",
-            log.created_at.strftime("%Y-%m-%d %H:%M:%S") if log.created_at else ""
+            format_time(log.created_at)
         ])
         
     t = Table(data)

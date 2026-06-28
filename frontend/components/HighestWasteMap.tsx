@@ -43,36 +43,23 @@ export default function HighestWasteMap({ data }: HighestWasteMapProps) {
   if (!mounted) return <div className="h-64 w-full bg-slate-100 animate-pulse rounded-md"></div>;
 
   return (
-    <div className="space-y-4">
-      <div className="h-64 w-full relative z-0 overflow-hidden rounded-md border border-slate-200">
-        <MapContainer 
-          center={[data.latitude, data.longitude]} 
-          zoom={13} 
-          style={{ height: "100%", width: "100%" }}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Marker position={[data.latitude, data.longitude]} icon={redIcon}>
-            <Popup>
-              <div className="font-semibold text-rose-600">Highest Waste Area</div>
-              <div className="text-sm">{data.total_weight.toFixed(2)} kg</div>
-            </Popup>
-          </Marker>
-        </MapContainer>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-[#FEF2F2] dark:bg-[#FEF2F2] p-3 rounded-md border border-rose-100 dark:border-none">
-          <div className="text-xs text-rose-500 uppercase font-medium">Total Weight</div>
-          <div className="text-lg font-bold text-[#DC2626]">{data.total_weight.toFixed(2)} kg</div>
-        </div>
-        <div className="bg-[#EFF6FF] dark:bg-[#EFF6FF] p-3 rounded-md border border-slate-200 dark:border-none">
-          <div className="text-xs text-slate-500 uppercase font-medium">Total Entries</div>
-          <div className="text-lg font-bold text-[#2563EB]">{data.entry_count} logs</div>
-        </div>
-      </div>
+    <div className="h-full w-full relative z-0 overflow-hidden rounded-md border border-slate-200 dark:border-slate-800">
+      <MapContainer 
+        center={[data.latitude, data.longitude]} 
+        zoom={13} 
+        style={{ height: "100%", width: "100%" }}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <Marker position={[data.latitude, data.longitude]} icon={redIcon}>
+          <Popup>
+            <div className="font-semibold text-rose-600">Highest Waste Area</div>
+            <div className="text-sm">{data.total_weight.toFixed(2)} kg</div>
+          </Popup>
+        </Marker>
+      </MapContainer>
     </div>
   );
 }

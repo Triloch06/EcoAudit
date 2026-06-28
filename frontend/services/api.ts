@@ -18,6 +18,21 @@ api.interceptors.request.use(async (config) => {
     return config;
 });
 
+api.interceptors.response.use((response) => {
+    if (response.config.responseType === 'blob') {
+        return response;
+    }
+    if (response.data && response.data.success !== undefined) {
+        response.data = response.data.data;
+    }
+    return response;
+}, (error) => {
+    if (error.response && error.response.status === 429) {
+        console.error('Rate limit exceeded');
+    }
+    return Promise.reject(error);
+});
+
 export const exportService = {
     exportExcel: async () => {
         const response = await api.get('/export/excel', { responseType: 'blob' });

@@ -1,25 +1,14 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { BarChart3, ListOrdered, Award, Clock, MapPin } from 'lucide-react';
+import { FileText, Star, Clock, Briefcase } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import dynamic from 'next/dynamic';
-
-const getCategoryBorderColor = (category: string) => {
-  switch(category.toLowerCase()) {
-    case 'plastic': return '#3B82F6';
-    case 'organic': return '#10B981';
-    case 'paper': return '#EAB308';
-    case 'metal': return '#94A3B8';
-    case 'glass': return '#06B6D4';
-    case 'e-waste': return '#8B5CF6';
-    default: return '#1E293B';
-  }
-};
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 const HighestWasteMap = dynamic(() => import('./HighestWasteMap'), {
   ssr: false,
-  loading: () => <div className="h-64 w-full bg-slate-100 animate-pulse rounded-md" />
+  loading: () => <div className="h-48 w-full bg-slate-100 dark:bg-slate-800 animate-pulse rounded-md" />
 });
 
 interface AnalyticsData {
@@ -43,141 +32,197 @@ interface DashboardStatsProps {
   isLoading: boolean;
 }
 
-const COLORS = ['#059669', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#64748b'];
+const COLORS = ['#387F39', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#64748b'];
 
 export const DashboardStats: React.FC<DashboardStatsProps> = ({ data, highestArea, isLoading }) => {
   if (isLoading || !data) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="border-slate-200">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-4 rounded-full" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-8 w-20 mb-1" />
-            </CardContent>
-          </Card>
-        ))}
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="border-slate-200">
+              <CardContent className="p-6">
+                <Skeleton className="h-10 w-10 mb-4" />
+                <Skeleton className="h-4 w-24 mb-2" />
+                <Skeleton className="h-8 w-16" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
 
-  const pieData = Object.entries(data.category_totals).map(([name, value], index) => ({
-    name,
-    value,
-    color: COLORS[index % COLORS.length]
-  }));
+  const pieData = Object.entries(data.category_totals)
+    .filter(([_, value]) => value > 0)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, value], index) => ({
+      name,
+      value,
+      color: COLORS[index % COLORS.length]
+    }));
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Left Column - Stats */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {/* Total Waste Card */}
-            <Card className="border-slate-200 dark:border-none shadow-sm md:col-span-1 bg-emerald-50 dark:bg-[#ECFDF5]">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xs font-medium text-emerald-800 uppercase tracking-wider flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4 text-[#10B981]" />
-                  Total Waste
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-emerald-900 dark:text-[#047857]">
-                  {data.total_waste.toFixed(2)} <span className="text-sm text-emerald-700 dark:text-[#047857]/80">kg</span>
-                </div>
-              </CardContent>
-            </Card>
+      {/* Top Stats Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <Card className="glass-card hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group overflow-hidden relative">
+          <div className="absolute inset-0 bg-emerald-500/5 dark:bg-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <CardContent className="p-4 sm:p-6 flex items-start gap-4">
+            <div className="p-3 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl">
+              <Briefcase className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Total Waste</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">{data.total_waste.toFixed(2)}</span>
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-300">kg</span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Total waste logged</p>
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card className="border-slate-200 dark:border-none shadow-sm dark:bg-[#111827]">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-xs font-medium text-slate-500 dark:text-[#CBD5E1] uppercase tracking-wider">
-                  Total Entries
-                </CardTitle>
-                <ListOrdered className="h-4 w-4 text-[#3B82F6]" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-slate-900 dark:text-[#60A5FA]">{data.total_entries}</div>
-              </CardContent>
-            </Card>
+        <Card className="glass-card hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group overflow-hidden relative">
+          <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <CardContent className="p-4 sm:p-6 flex items-start gap-4">
+            <div className="p-3 bg-blue-100 dark:bg-blue-900/50 rounded-xl">
+              <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Total Entries</p>
+              <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">{data.total_entries}</div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Waste logs submitted</p>
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card className="border-slate-200 dark:border-none shadow-sm dark:bg-[#111827]">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-xs font-medium text-slate-500 dark:text-[#CBD5E1] uppercase tracking-wider">
-                  Most Logged
-                </CardTitle>
-                <Award className="h-4 w-4 text-[#F59E0B]" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-slate-900 dark:text-[#F59E0B] capitalize truncate">
-                  {data.most_logged_category || '-'}
-                </div>
-              </CardContent>
-            </Card>
+        <Card className="glass-card hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group overflow-hidden relative">
+          <div className="absolute inset-0 bg-orange-500/5 dark:bg-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <CardContent className="p-4 sm:p-6 flex items-start gap-4">
+            <div className="p-3 bg-orange-100 dark:bg-orange-900/50 rounded-xl">
+              <Star className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Most Logged</p>
+              <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white capitalize truncate">{data.most_logged_category || '-'}</div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Highest waste category</p>
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card className="border-slate-200 dark:border-none shadow-sm dark:bg-[#111827]">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-xs font-medium text-slate-500 dark:text-[#CBD5E1] uppercase tracking-wider">
-                  Latest Entry
-                </CardTitle>
-                <Clock className="h-4 w-4 text-[#A78BFA]" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-lg font-bold text-slate-900 dark:text-[#A78BFA] truncate">
-                  {data.latest_entry 
+        <Card className="glass-card hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group overflow-hidden relative">
+          <div className="absolute inset-0 bg-purple-500/5 dark:bg-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <CardContent className="p-4 sm:p-6 flex items-start gap-4">
+            <div className="p-3 bg-purple-100 dark:bg-purple-900/50 rounded-xl">
+              <Clock className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            </div>
+            <div className="overflow-hidden">
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Latest Entry</p>
+              <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white truncate">
+                {data.latest_entry 
                     ? formatDistanceToNow(
                         new Date(!data.latest_entry.includes('Z') && !data.latest_entry.includes('+') ? data.latest_entry + 'Z' : data.latest_entry), 
-                        { addSuffix: true }
+                        { addSuffix: false }
                       ) 
                     : '-'}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">Last submission time</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-          <h3 className="text-lg font-semibold text-slate-800 dark:text-[#F8FAFC] mt-6 mb-3">Category Breakdown</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {Object.entries(data.category_totals)
-              .sort((a, b) => b[1] - a[1])
-              .map(([category, weight]) => {
-                const percentage = data.total_waste > 0 ? ((weight / data.total_waste) * 100).toFixed(1) : '0';
-                return (
-                  <Card key={category} className="border-slate-200 dark:border-none shadow-sm dark:bg-[#1E293B]" style={{ borderTop: `4px solid ${getCategoryBorderColor(category)}` }}>
-                    <CardHeader className="pb-1 pt-4 px-4">
-                      <CardTitle className="text-sm font-medium text-slate-700 dark:text-[#CBD5E1] capitalize">{category}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-4">
-                      <div className="text-xl font-bold text-slate-900 dark:text-slate-100">{weight.toFixed(1)} <span className="text-sm font-normal text-slate-500 dark:text-slate-400">kg</span></div>
-                      <div className="text-xs text-slate-500 dark:text-[#94A3B8] mt-1">{percentage}% of total</div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-          </div>
-        </div>
-
-        {/* Right Column - Map Only */}
-        <div className="lg:col-span-1 space-y-6">
-          <Card className="border-slate-200 dark:border-none shadow-sm dark:bg-[#1E293B]">
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-slate-700 dark:text-[#CBD5E1]">Highest Waste Area</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {highestArea ? (
-                <HighestWasteMap data={highestArea} />
-              ) : (
-                <div className="h-64 w-full bg-slate-50 dark:bg-slate-800 flex flex-col items-center justify-center rounded-md text-slate-400 text-sm">
-                  <MapPin className="h-8 w-8 mb-2 opacity-50" />
-                  No location data
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+      {/* Middle Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
+        {/* Category Breakdown (Donut) */}
+        <Card className="glass-card flex flex-col">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold text-emerald-800 dark:text-emerald-400">Category Breakdown</CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-8 min-h-[300px]">
+            {pieData.length > 0 ? (
+              <>
+                <div className="h-48 w-48 shrink-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                        stroke="none"
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        formatter={(value: number) => [`${value.toFixed(2)} kg`, 'Weight']}
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex-1 w-full max-w-sm space-y-4">
+                  {pieData.map((entry) => {
+                    const percentage = ((entry.value / data.total_waste) * 100).toFixed(0);
+                    return (
+                      <div key={entry.name} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }}></div>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200 capitalize">{entry.name}</span>
+                        </div>
+                        <span className="text-slate-600 dark:text-slate-400 text-sm">
+                          {entry.value.toFixed(2)} kg <span className="text-slate-400 dark:text-slate-500">({percentage}%)</span>
+                        </span>
+                      </div>
+                    );
+                  })}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-3 mt-4 flex items-center justify-between text-sm">
+                    <span className="text-slate-500 dark:text-slate-400">Total Categories</span>
+                    <span className="font-bold text-slate-900 dark:text-white">{pieData.length}</span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center justify-center h-full text-slate-400">No data available</div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Highest Waste Area */}
+        <Card className="glass-card flex flex-col">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold text-emerald-800 dark:text-emerald-400">Highest Waste Area</CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 p-4 pt-0">
+            {highestArea ? (
+              <div className="flex flex-col sm:flex-row gap-4 h-full">
+                <div className="flex-1 min-h-[200px] sm:min-h-[250px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                  <HighestWasteMap data={highestArea} />
+                </div>
+                <div className="w-full sm:w-40 flex flex-col gap-4 shrink-0">
+                  <div className="bg-rose-50 dark:bg-rose-950/30 p-4 rounded-xl border border-rose-100 dark:border-rose-900/50 flex-1 flex flex-col justify-center">
+                    <p className="text-xs font-bold text-rose-800 dark:text-rose-400 uppercase tracking-wider mb-1">Total Weight</p>
+                    <p className="text-2xl font-bold text-rose-600 dark:text-rose-500">{highestArea.total_weight.toFixed(2)} kg</p>
+                  </div>
+                  <div className="bg-blue-50 dark:bg-blue-950/30 p-4 rounded-xl border border-blue-100 dark:border-blue-900/50 flex-1 flex flex-col justify-center">
+                    <p className="text-xs font-bold text-blue-800 dark:text-blue-400 uppercase tracking-wider mb-1">Total Entries</p>
+                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-500">{highestArea.entry_count} logs</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="h-full flex items-center justify-center text-slate-400">No location data available</div>
+            )}
+          </CardContent>
+        </Card>
+
       </div>
     </div>
   );

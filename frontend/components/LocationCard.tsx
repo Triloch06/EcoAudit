@@ -59,7 +59,7 @@ export const LocationCard: React.FC<LocationCardProps> = ({
   };
 
   return (
-    <Card className="border-slate-200 shadow-sm transition-all duration-300">
+    <Card className="glass-card transition-all duration-300">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <MapPin className="h-5 w-5 text-blue-500" />
@@ -72,9 +72,9 @@ export const LocationCard: React.FC<LocationCardProps> = ({
       <CardContent>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-slate-500">Status</span>
+            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Status</span>
             {locationStatus === 'NOT_CAPTURED' && (
-              <div className="flex items-center gap-2 text-slate-600 font-medium">
+              <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300 font-medium">
                 <span className="h-2.5 w-2.5 rounded-full border-2 border-slate-400"></span>
                 Not Verified
               </div>
@@ -91,17 +91,17 @@ export const LocationCard: React.FC<LocationCardProps> = ({
                   <span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
                   Verified
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-sm text-slate-600 mt-1">
+                <div className="grid grid-cols-2 gap-2 text-sm text-slate-600 dark:text-slate-300 mt-1">
                   <div>
-                    <span className="block text-xs text-slate-400">Accuracy</span>
+                    <span className="block text-xs text-slate-400 dark:text-slate-500">Accuracy</span>
                     ±{accuracy ? Math.round(accuracy) : '-'} m
                   </div>
                   <div>
-                    <span className="block text-xs text-slate-400">Last Updated</span>
+                    <span className="block text-xs text-slate-400 dark:text-slate-500">Last Updated</span>
                     {lastUpdated || '-'}
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 text-sm text-emerald-600 mt-2 font-medium bg-emerald-50 p-2 rounded-md">
+                <div className="flex items-center gap-1.5 text-sm text-emerald-600 dark:text-emerald-400 mt-2 font-medium bg-emerald-50 dark:bg-emerald-950/50 p-2 rounded-md">
                   <CheckCircle2 className="h-4 w-4" />
                   Ready to Submit
                 </div>
@@ -109,7 +109,7 @@ export const LocationCard: React.FC<LocationCardProps> = ({
                 {locationStatus === 'CAPTURED' && latitude !== null && longitude !== null && (
                   <div className="mt-4">
                     <MapPreview latitude={latitude} longitude={longitude} />
-                    <div className="text-xs text-slate-500 mt-2 text-center">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 text-center">
                       Lat: {latitude.toFixed(6)}, Lng: {longitude.toFixed(6)}
                     </div>
                   </div>
@@ -122,7 +122,7 @@ export const LocationCard: React.FC<LocationCardProps> = ({
                   <span className="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
                   Permission Denied
                 </div>
-                <div className="bg-rose-50 border border-rose-100 text-rose-700 p-3 rounded-md text-sm flex items-start gap-2">
+                <div className="bg-rose-50 dark:bg-rose-950/50 border border-rose-100 dark:border-rose-900/50 text-rose-700 dark:text-rose-400 p-3 rounded-md text-sm flex items-start gap-2">
                   <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
                   <p>Location access is required to submit a waste log. Please allow location access in your browser and try again.</p>
                 </div>
@@ -134,7 +134,7 @@ export const LocationCard: React.FC<LocationCardProps> = ({
             <Button 
               onClick={handleGetLocation} 
               variant={locationStatus === 'DENIED' ? 'outline' : 'default'}
-              className={locationStatus === 'NOT_CAPTURED' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}
+              className={locationStatus === 'NOT_CAPTURED' ? 'bg-emerald-700 hover:bg-emerald-800 text-white' : ''}
             >
               {locationStatus === 'DENIED' ? 'Retry Location' : 'Get Current Location'}
             </Button>

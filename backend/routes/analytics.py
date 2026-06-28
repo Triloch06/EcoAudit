@@ -1,16 +1,20 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import func, desc, text, Numeric
 from database.database import get_db
 from models.models import WasteLog, Profile
-from schemas.schemas import AnalyticsResponse, HighestAreaResponse
+from schemas.schemas import AnalyticsResponse, HighestAreaResponse, SuccessResponse
 from dependencies.auth import get_current_user
 from typing import Optional
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
+limiter = Limiter(key_func=get_remote_address)
 
-@router.get("", response_model=AnalyticsResponse)
-def get_analytics(db: Session = Depends(get_db), current_user: Profile = Depends(get_current_user)):
+@router.get("", response_model=SuccessResponse[AnalyticsResponse])
+@limiter.limit("30/minute")
+def get_analytics(request: Request, db: Session = Depends(get_db), current_user: Profile = Depends(get_current_user)):
     query = db.query(WasteLog)
     
     if current_user.role != "admin":
@@ -32,16 +36,18 @@ def get_analytics(db: Session = Depends(get_db), current_user: Profile = Depends
         
     latest_entry = db.query(func.max(WasteLog.created_at)).filter(WasteLog.id.in_(query.with_entities(WasteLog.id))).scalar()
     
-    return AnalyticsResponse(
+    data = AnalyticsResponse(
         total_waste=float(total_waste),
         total_entries=total_entries,
         category_totals=category_totals,
         most_logged_category=most_logged_category,
         latest_entry=latest_entry
     )
+    return SuccessResponse(data=data)
 
-@router.get("/highest-area", response_model=Optional[HighestAreaResponse])
-def get_highest_area(db: Session = Depends(get_db), current_user: Profile = Depends(get_current_user)):
+@router.get("/highest-area", response_model=SuccessResponse[Optional[HighestAreaResponse]])
+@limiter.limit("30/minute")
+def get_highest_area(request: Request, db: Session = Depends(get_db), current_user: Profile = Depends(get_current_user)):
     query = db.query(WasteLog)
     
     if current_user.role != "admin":
@@ -62,11 +68,12 @@ def get_highest_area(db: Session = Depends(get_db), current_user: Profile = Depe
      .first()
      
     if not area_query:
-        return None
+        return SuccessResponse(data=None)
         
-    return HighestAreaResponse(
+    data = HighestAreaResponse(
         latitude=float(area_query.lat),
         longitude=float(area_query.lon),
         total_weight=float(area_query.total_weight),
         entry_count=area_query.entry_count
     )
+    return SuccessResponse(data=data)

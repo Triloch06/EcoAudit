@@ -401,7 +401,6 @@ I tried to think about security not as a checklist but as understanding *why* ea
 
 - **Reverse geocoding** — Show human-readable addresses instead of raw coordinates. An API like Nominatim could convert lat/lon to "Kodambakkam, Chennai" in the waste table and exports.
 - **Heatmap** — Overlay waste density on a full map using Leaflet's heatmap plugin. Would give a better visual than a single "highest area" pin.
-- **Image upload** — Let users attach photos of waste. Would need Supabase Storage or S3 and a separate upload endpoint with file validation.
 - **Offline support** — Service workers could cache the submission form and queue entries for when connectivity resumes. Useful for fieldwork in low-signal areas.
 - **Time-series analytics** — "How has plastic waste changed week over week?" Needs `GROUP BY date_trunc('week', created_at)` and a line chart.
 - **Better admin dashboard** — Currently admins just see all data. A dedicated admin view with user management, bulk delete, and flagging would be more useful.
@@ -426,6 +425,7 @@ I tried to think about security not as a checklist but as understanding *why* ea
 ## Screenshots
 
 > Screenshots are available in the `docs/` directory.
+
 
 | Screen | Description |
 |---|---|

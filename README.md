@@ -1,4 +1,5 @@
 # EcoAudit – Community Waste Logger
+EcoAudit-https://eco-audit-five.vercel.app/
 
 A waste logging application where community members log waste entries with GPS-verified locations. The data feeds into a dashboard with analytics, category breakdowns, and geographic waste concentration mapping. Users and admins have different levels of access, and all data can be exported as Excel or PDF.
 
